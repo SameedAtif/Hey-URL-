@@ -1,52 +1,45 @@
 # frozen_string_literal: true
 
 class UrlsController < ApplicationController
+  after_action :track_click, only: :visit, if: -> { params[:short_url].present? }
+  before_action :set_url, only: %w[show visit]
+
   def index
     # recent 10 short urls
     @url = Url.new
-    @urls = [
-      Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDG', original_url: 'http://facebook.com', created_at: Time.now),
-      Url.new(short_url: 'ABCDF', original_url: 'http://yahoo.com', created_at: Time.now)
-    ]
+    @urls = Url.last(10)
   end
 
   def create
-    raise 'add some code'
-    # create a new URL record
+    Url.create!(permitted_params)
+    redirect_to urls_path
   end
 
   def show
-    @url = Url.new(short_url: 'ABCDE', original_url: 'http://google.com', created_at: Time.now)
-    # implement queries
-    @daily_clicks = [
-      ['1', 13],
-      ['2', 2],
-      ['3', 1],
-      ['4', 7],
-      ['5', 20],
-      ['6', 18],
-      ['7', 10],
-      ['8', 20],
-      ['9', 15],
-      ['10', 5]
-    ]
-    @browsers_clicks = [
-      ['IE', 13],
-      ['Firefox', 22],
-      ['Chrome', 17],
-      ['Safari', 7]
-    ]
-    @platform_clicks = [
-      ['Windows', 13],
-      ['macOS', 22],
-      ['Ubuntu', 17],
-      ['Other', 7]
-    ]
+    @daily_clicks = @url.current_month_daily_clicks
+    @browsers_clicks = @url.current_months_browser_counts
+    @platform_clicks = @url.current_months_platform
   end
 
   def visit
-    # params[:short_url]
-    render plain: 'redirecting to url...'
+    redirect_to @url.original_url
+  end
+
+  private
+
+  def permitted_params
+    params.require(:url).permit(:original_url)
+  end
+
+  def set_url
+    @url = Url.find_by!(short_url: params[:url] || params[:short_url])
+  end
+
+  def track_click
+    Click.create!(
+      url: @url,
+      browser: browser.name,
+      platform: browser.platform.name
+    )
   end
 end
