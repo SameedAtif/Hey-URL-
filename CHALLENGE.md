@@ -1,7 +1,3 @@
-![FullStack Labs](app/assets/images/FSL-logo-portrait.png)
-
-# Before You Start
-
 Please follow the [`Getting Started` section on README](./README.md) to set up
 your environment before starting the challenge.
 
@@ -27,7 +23,6 @@ functionality.
    1. The user should be able to see total clicks per day on the current month
    1. An additional chart with a breakdown of browsers and platforms
 1. If someone tries to visit a invalid short URL then it should return a 404 page
-1. Controllers, endpoints and models should be fully tested with RSpec
 
 # Spec for generating short URLs
 - It MUST have 5 characters in length e.g. NELNT
@@ -56,48 +51,3 @@ The following pages/urls are already built into our app:
    track the click event
 1. `GET /urls/:url`: Shows the metrics associated to the short URL
 
-# API - Optional Bonus Points
-We would like to have a way to retrieve the last 10 URLs created using an API
-endpoint. It should be JSON-API complaint. Here is an example of a response from
-the API:
-
-```
-{
-  "data": [
-    {
-      "type": "urls",
-      "id": "1",
-      "attributes": {
-        "created-at": "2018-08-15T02:48:08.642Z",
-        "original-url": "www.fullstacklabs.co/angular-developers",
-        "url": "https://domain/fss1",
-        "clicks": 2
-      },
-      "relationships": {
-        "clicks": {
-          "data": [
-            {
-              "id": 1,
-              "type": "clicks"
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "included": [
-    {
-      "type": "clicks",
-      "id": 1,
-      "attributes": {
-        ...
-      }
-    }
-  ]
-}
-```
-
-# Accomplishment
-- Completed functionality 65%
-- Completed test 20%
-- Completed bonus 15%
